@@ -1,4 +1,4 @@
 export class QueryDto {
-  skip = 0;
-  limit = 10;
+  size = 1;
+  from = 0;
 }

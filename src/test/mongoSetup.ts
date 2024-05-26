@@ -3,7 +3,7 @@ import mongoose, { ConnectOptions } from 'mongoose';
 
 const mongoServer = new MongoMemoryServer();
 
-const connectionPromise = new Promise((resolve, reject) => {
+const connection = new Promise((resolve, reject) => {
   mongoServer.start()
     .then(() => {
       const mongoUri = mongoServer.getUri();
@@ -12,6 +12,7 @@ const connectionPromise = new Promise((resolve, reject) => {
         useUnifiedTopology: true,
         socketTimeoutMS: 30000,
       };
+
       mongoose.connect(mongoUri, mongooseOpts as ConnectOptions);
 
       mongoose.connection.on('connected', () => {
@@ -30,14 +31,9 @@ const connectionPromise = new Promise((resolve, reject) => {
       return null;
     })
     .catch((err) => {
-      console.error('Error in prepareStorage');
-      console.error(err);
+      console.error('Error in prepareStorage', err);
       reject(err);
     });
 });
 
-/**
- * This promise is resolved when the test database
- * is ready and the connection has been made.
- */
-export default connectionPromise;
+export default connection;

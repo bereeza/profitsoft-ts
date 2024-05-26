@@ -1,84 +1,72 @@
-# nodejs-sample
-This is an example node js project using typescript, consul, express, mongoose, mocha.
+### Завдання до 3 модулю
 
-# How to run "for the prod"
+# Endpoints:
 
-Just execute `docker-compose up`
+### POST: 
+http://localhost:8888/api/review
 
-It will run all services in containers (nodejs-sample, db and consul).
-Once consul is running, all key-values will be added automatically.
-Once consul and db are running, nodejs-sample will be started.
-
-After that you can check the service by calling
-GET: `http://localhost:8888/ping`
-response will be `PONG`
-
-All consul kv's and mongoDB data will be stored in docker/data/...
-Thus, when the containers are restarted, data will not be lost.
-
-# Configuration
-
-If for some reason consul kv's were not added, and you need to add it manually:
-
-Open consul ui (by default `localhost:8501`)
-Add to consul these key-values:
-
-for "prod" version
-
-`config/nodejs-sample/prod/address` : `0.0.0.0`
-
-`config/nodejs-sample/prod/port` : `8888`
-
-`config/nodejs-sample/prod/mongo.address` : `mongodb://db:27017`
-
-
-for "dev" version
-
-`config/nodejs-sample/dev/address` : `localhost`
-
-`config/nodejs-sample/dev/port` : `8888`
-
-`config/nodejs-sample/dev/mongo.address` : `mongodb://127.0.0.1:27018`
-
-
-run nodejs-sample again
-
-# Setup
-Run `npm install` in the terminal
-
-# How to run for the prod
-
-When consul and mongoDB containers are running
-```
-npm run start
+BODY: 
+```json
+{
+  "comment": "string",
+  "rating": 1,
+  "date": "01-01-2000",
+  "songId": 1
+}
 ```
 
-If everything is fine, you will see:
-"Example app listening on port localhost:8888"
-
-# How to develop
-
-```
-npm run devel
+RESULT: 
+```json
+{
+    "id": "665317e53672426faf5cffef"
+}
 ```
 
-# How to build
+Також варто виконувати умови валідації і вказувати вірні дані (айді пісні, рейтинг та дату).
 
-```
-npm run build
+### GET: 
+http://localhost:8888/api/review/1?size=2&from=0 або http://localhost:8888/api/review/1 (тоді параметри будуть стояти по дефолту)
+
+RESULT:
+```json
+{
+    "result": [
+        {
+            "_id": "665317e53672426faf5cffef",
+            "comment": "string",
+            "rating": 1
+        },
+        {
+            "_id": "6652321cd66e7ffc40b08e43",
+            "comment": "string",
+            "rating": 1
+        }
+    ]
+}
 ```
 
-# How to run tests
+### POST: 
+http://localhost:8888/api/review/_count
 
-```
-npm run test
+BODY:
+```json
+{
+    "id": [1, 2]
+}
 ```
 
-If everything is fine, you should see the list of passed tests
-
-# How to check coverage
-
+RESULT:
+```json
+{
+    "result": [
+        {
+            "_id": 1,
+            "count": 9
+        },
+        {
+            "_id": 2,
+            "count": 1
+        }
+    ]
+}
 ```
-npm run coverage
-```
-If everything is fine, you should see the table with coverage after passed tests

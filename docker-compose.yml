@@ -1,6 +1,6 @@
-version: '3.5'
+version: '1.0'
 services:
-  nodejs-sample:
+  profitsoft-ts:
     build: .
     ports:
       - '8888:8888'
