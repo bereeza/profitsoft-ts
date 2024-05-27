@@ -1,22 +1,28 @@
 import chai from 'chai';
-import {getSongId} from '../../client';
+import sinon from 'sinon';
+import { getSongId } from '../../client';
+import {instance as inst} from "../../client/instance";
 
-const {expect} = chai;
+const { expect } = chai;
+const sandbox = sinon.createSandbox();
 
 describe("Attempting to retrieve an existing song.", () => {
-  it("Return true if song exist.", async () => {
-    const songId = 1;
+  const songId = 1;
+  const instance = sandbox.stub(inst, 'get');
 
-    await getSongId(songId).then((res) => {
-      expect(res).to.be.true;
-    }).catch((err: Error) => err);
+  afterEach(() => {
+    sandbox.restore();
+  });
+
+  it("Return true if song exist.", async () => {
+    instance.resolves({ data: { id: songId } });
+    const result = await getSongId(songId);
+    expect(result).to.be.true;
   });
 
   it("Return false if song doesn't exist.", async () => {
-    const songId = -1;
-
-    await getSongId(songId).then((res) => {
-      expect(res).to.be.false;
-    }).catch((err: Error) => err);
+    instance.rejects(new Error(`Song with ${songId} id not found.`));
+    const result = await getSongId(songId);
+    expect(result).to.be.false;
   });
 });
